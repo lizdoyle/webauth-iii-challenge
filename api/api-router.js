@@ -13,18 +13,18 @@ router.post('/register', (req, res) => {
 
     user.password = hash;
 
-    Users.add(user) {
+    Users.add(user)
         .then(saved => { 
             const token = genToken(saved);
-            res.status(201).json({created_user: saved, token: token})
 
+          //  pass saved user into the getToken to get the token
+            res.status(201).json({created_user: saved, token: token})
+            //returning user and token
         })
         .catch(err => {
             res.status(500).json({message: "You shall not pass!"})
         })
-    }
-
-})
+    })
 
 router.post('/login', (req, res) => {
     let {username, password} = req.body;
@@ -33,6 +33,7 @@ router.post('/login', (req, res) => {
     .first()
     .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
+
             const token = genToken(user);
 
             res.status(200).json({username: user.username, token: token})
@@ -55,7 +56,7 @@ function genToken(user) {
         department: ['development']
     }
 
-    const options = {expiresIn: '1hr'};
+    const options = {expiresIn: '1h'};
     const token = jwt.sign(payload, secret.jwtSecret, options);
 
     return token
